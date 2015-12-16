@@ -1,0 +1,28 @@
+diff -up ./initdb.sh.scl-legacy ./initdb.sh
+--- ./initdb.sh.scl-legacy	2014-02-17 13:53:35.000000000 +0100
++++ ./initdb.sh	2014-02-17 15:09:00.209963614 +0100
+@@ -9,8 +9,8 @@ then
+     SERVICE_NAME=postgresql
+ fi
+ 
+-echo Hint: the preferred way to do this is now '"postgresql-setup initdb"' >&2
++echo "Hint: the preferred way to do this is now \"scl enable __SCL_NAME__ 'postgresql-setup initdb'\"" >&2
+ 
+-/usr/bin/postgresql-setup initdb "$SERVICE_NAME"
++scl enable __SCL_NAME__ -- postgresql-setup initdb "$SERVICE_NAME"
+ 
+ exit $?
+diff -up ./upgrade.sh.scl-legacy ./upgrade.sh
+--- ./upgrade.sh.scl-legacy	2014-02-17 13:53:35.000000000 +0100
++++ ./upgrade.sh	2014-02-17 15:07:38.739440049 +0100
+@@ -9,8 +9,8 @@ then
+     SERVICE_NAME=postgresql
+ fi
+ 
+-echo Hint: the preferred way to do this is now '"postgresql-setup upgrade"' >&2
++echo "Hint: the preferred way to do this is now \"scl enable __SCL_NAME__ 'postgresql-setup upgrade'\"" >&2
+ 
+-/usr/bin/postgresql-setup upgrade "$SERVICE_NAME"
++scl enable __SCL_NAME__ -- postgresql-setup upgrade "$SERVICE_NAME"
+ 
+ exit $?
