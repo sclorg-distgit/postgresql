@@ -34,7 +34,6 @@
 %{?beta:%global __os_install_post /usr/lib/rpm/brp-compress}
 
 %{!?test:%global test 1}
-%{!?upgrade:%global upgrade 1}
 %{!?rewind:%global rewind 1}
 %{!?plpython:%global plpython 1}
 %{!?plpython3:%global plpython3 0}
@@ -63,8 +62,8 @@
 Summary: PostgreSQL client programs
 Name: %{?scl_prefix}postgresql
 %global majorversion 9.5
-Version: 9.5.0
-Release: 5%{?dist}
+Version: 9.5.1
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -98,7 +97,6 @@ Patch4: postgresql-config-comment.patch
 Patch6: postgresql-var-run-socket.patch
 Patch8: postgresql-man.patch
 Patch9: postgresql-socket-dirs-pgupgrade.patch
-Patch10: postgresql-python3.5-tests.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
 BuildRequires: perl(ExtUtils::Embed)
@@ -247,20 +245,6 @@ with a PostgreSQL database management server.  It also contains the ecpg
 Embedded C Postgres preprocessor. You need to install this package if you want
 to develop applications which will interact with a PostgreSQL server.
 
-%if %upgrade
-%package upgrade
-Summary: Support for upgrading from the previous major release of PostgreSQL
-Group: Applications/Databases
-Requires: %{name}-server%{?_isa} = %{version}-%{release}
-Requires: %{name}-libs%{?_isa} = %{version}-%{release}
-%{?scl:Requires:%scl_runtime}
-
-%description upgrade
-The postgresql-upgrade package contains the pg_upgrade utility and supporting
-files needed for upgrading a PostgreSQL database from the core system version
-of PostgreSQL.
-%endif
-
 %if %plperl
 %package plperl
 Summary: The Perl procedural language for PostgreSQL
@@ -339,7 +323,6 @@ benchmarks.
 %patch6 -p1
 %patch8 -p1
 %patch9 -p1
-%patch10 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -1118,10 +1101,6 @@ cd -
 %{_mandir}/man1/ecpg.*
 %{_mandir}/man3/SPI_*
 
-%if %upgrade
-%files upgrade
-%endif
-
 %if %plperl
 %files plperl -f plperl.lst
 %{_datadir}/pgsql/extension/plperl*
@@ -1159,6 +1138,13 @@ cd -
 %endif
 
 %changelog
+* Wed Feb 17 2016 Pavel Kajaba <pkajaba@redhat.com> - 9.5.1-2
+- Removed upgrade package because it was empty.
+
+* Tue Feb 16 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.1-1
+- Rebase to 9.5.1 (CVE-2016-0773) per release notes
+  http://www.postgresql.org/docs/9.5/static/release-9-5-1.html
+
 * Fri Feb 12 2016 Honza Horak <hhorak@redhat.com> - 9.5.0-5
 - Rebuild with newer scl-utils
 
