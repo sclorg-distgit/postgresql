@@ -64,8 +64,8 @@
 Summary: PostgreSQL client programs
 Name: %{?scl_prefix}postgresql
 %global majorversion 9.5
-Version: 9.5.1
-Release: 2%{?dist}
+Version: 9.5.2
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -250,6 +250,13 @@ with a PostgreSQL database management server.  It also contains the ecpg
 Embedded C Postgres preprocessor. You need to install this package if you want
 to develop applications which will interact with a PostgreSQL server.
 
+%package static
+Summary: Statically linked PostgreSQL libraries
+Requires: %{name}-devel%{?_isa} = %{version}-%{release}
+
+%description static
+Statically linked PostgreSQL libraries that do not have dynamically linked
+counterparts.
 
 %if %plperl
 %package plperl
@@ -733,7 +740,7 @@ mv $RPM_BUILD_ROOT%{_docdir}/pgsql/html doc
 rm -rf $RPM_BUILD_ROOT%{_docdir}/pgsql
 
 # remove files not to be packaged
-rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
+rm $RPM_BUILD_ROOT%{_libdir}/{libecpg,libpq,libecpg_compat,libpgtypes}.a
 
 %if !%plperl
 rm -f $RPM_BUILD_ROOT%{_bindir}/pgsql/hstore_plperl.so
@@ -1079,6 +1086,7 @@ cd -
 %{_datadir}/pgsql/*.sample
 %{_datadir}/pgsql/timezonesets/
 %{_datadir}/pgsql/tsearch_data/
+%dir %{_datadir}/postgresql-setup
 %{_datadir}/postgresql-setup/library.sh
 %{_libdir}/pgsql/dict_snowball.so
 %{_libdir}/pgsql/pg_prewarm.so
@@ -1119,9 +1127,14 @@ cd -
 %{_libdir}/libecpg_compat.so
 %{_libdir}/libpgtypes.so
 %{_libdir}/pgsql/pgxs/
+%dir %{_libdir}/pkgconfig/
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/ecpg.*
 %{_mandir}/man3/SPI_*
+
+%files static
+%{_libdir}/libpgcommon.a
+%{_libdir}/libpgport.a
 
 %if %plperl
 %files plperl -f plperl.lst
@@ -1164,6 +1177,16 @@ cd -
 %endif
 
 %changelog
+* Mon Apr 4 2016 Pavel Kajaba <pkajaba@redhat.com> - 9.5.2-1
+- Rebase to 9.5.2 (CVE-2016-3065) per release notes
+  http://www.postgresql.org/docs/9.5/static/release-9-5-2.html
+
+* Tue Mar 29 2016 Pavel Kajaba <pkajaba@redhat.com> - 9.5.1-4
+- Inlude missing files into files section (rhbz#1321915)
+
+* Thu Mar 10 2016 Pavel Kajaba <pkajaba@redhat.com> - 9.5.1-3
+- package static libraries without dynamic counterparts (rhbz#1314796)
+
 * Wed Feb 17 2016 Pavel Kajaba <pkajaba@redhat.com> - 9.5.1-2
 - Removed upgrade package because it was empty.
 
