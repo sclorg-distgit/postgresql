@@ -65,7 +65,7 @@ Summary: PostgreSQL client programs
 Name: %{?scl_prefix}postgresql
 %global majorversion 9.5
 Version: 9.5.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -631,12 +631,12 @@ pghost_override	/tmp
 EOF
 
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/postgresql-setup/upgrade/postgresql92.conf <<EOF
-id		postgresql94-postgresql
+id		rh-postgresql94-postgresql
 major		9.4
-data_default	/opt/rh/postgresql94/root/var/lib/pgsql/data
-engine		/opt/rh/postgresql94/root/usr/bin
+data_default	/var/opt/rh/rh-postgresql94/lib/pgsql/data
+engine		/opt/rh/rh-postgresql94/root/usr/bin
 description	"Upgrade data from RHSCL PostgreSQL version (PostgreSQL 9.4)"
-scls		"postgresql94"
+scls		"rh-postgresql94"
 redhat_sockets_hack yes
 pghost_override	/tmp
 EOF
@@ -728,7 +728,10 @@ mkdir -p -m 700 $RPM_BUILD_ROOT%{?_root_localstatedir}/lib/pgsql
 	rm -f GNUmakefile Makefile *.o
 	chmod 0755 pg_regress regress.so
 	popd
-	cp %{SOURCE5} $RPM_BUILD_ROOT%{_libdir}/pgsql/test/regress/Makefile
+	sed 's|@bindir@|%{_bindir}|g' \
+		< %{SOURCE5} \
+		> $RPM_BUILD_ROOT%{_libdir}/pgsql/test/regress/Makefile
+
 	chmod 0644 $RPM_BUILD_ROOT%{_libdir}/pgsql/test/regress/Makefile
 %endif
 
@@ -1177,6 +1180,10 @@ cd -
 %endif
 
 %changelog
+* Mon May 09 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.2-2
+- fix upgrade path from rh-postgresql94 (rhbz#1334351)
+- fix path to binary directory in Makefile.regress (rhbz#1334706)
+
 * Mon Apr 4 2016 Pavel Kajaba <pkajaba@redhat.com> - 9.5.2-1
 - Rebase to 9.5.2 (CVE-2016-3065) per release notes
   http://www.postgresql.org/docs/9.5/static/release-9-5-2.html
