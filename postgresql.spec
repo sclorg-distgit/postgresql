@@ -64,8 +64,8 @@
 Summary: PostgreSQL client programs
 Name: %{?scl_prefix}postgresql
 %global majorversion 9.4
-Version: 9.4.5
-Release: 1%{?dist}
+Version: 9.4.6
+Release: 3%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -251,6 +251,13 @@ with a PostgreSQL database management server.  It also contains the ecpg
 Embedded C Postgres preprocessor. You need to install this package if you want
 to develop applications which will interact with a PostgreSQL server.
 
+%package static
+Summary: Statically linked PostgreSQL libraries
+Requires: %{name}-devel%{?_isa} = %{version}-%{release}
+
+%description static
+Statically linked PostgreSQL libraries that do not have dynamically linked
+counterparts.
 
 %if %upgrade
 %package upgrade
@@ -735,7 +742,8 @@ mv $RPM_BUILD_ROOT%{_docdir}/pgsql/html doc
 rm -rf $RPM_BUILD_ROOT%{_docdir}/pgsql
 
 # remove files not to be packaged
-rm -f $RPM_BUILD_ROOT%{_libdir}/*.a
+rm $RPM_BUILD_ROOT%{_libdir}/{libecpg,libpq,libecpg_compat,libpgtypes}.a
+
 %if !%upgrade
 rm -f $RPM_BUILD_ROOT%{_bindir}/pg_upgrade
 rm -f $RPM_BUILD_ROOT%{_libdir}/pgsql/pg_upgrade_support.so
@@ -1065,6 +1073,7 @@ cd -
 %{_datadir}/pgsql/*.sample
 %{_datadir}/pgsql/timezonesets/
 %{_datadir}/pgsql/tsearch_data/
+%dir %{_datadir}/postgresql-setup
 %{_datadir}/postgresql-setup/library.sh
 %{_libdir}/pgsql/dict_snowball.so
 %{_libdir}/pgsql/pg_prewarm.so
@@ -1105,9 +1114,14 @@ cd -
 %{_libdir}/libecpg_compat.so
 %{_libdir}/libpgtypes.so
 %{_libdir}/pgsql/pgxs/
+%dir %{_libdir}/pkgconfig/
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/ecpg.*
 %{_mandir}/man3/SPI_*
+
+%files static
+%{_libdir}/libpgcommon.a
+%{_libdir}/libpgport.a
 
 %if %upgrade
 %files upgrade
@@ -1158,6 +1172,16 @@ cd -
 %endif
 
 %changelog
+* Thu Apr 28 2016 Pavel Kajaba <pkajaba@redhat.com> - 9.4.6-3
+- Inlude missing files into files section (rhbz#1330640)
+
+* Thu Mar 10 2016 Pavel Kajaba <pkajaba@redhat.com> - 9.4.6-2
+- package static libraries without dynamic counterparts (rhbz#1304782)
+
+* Tue Feb 16 2016 Pavel Raiskup <praiskup@redhat.com> - 9.4.6-1
+- update to 9.4.6 (CVE-2016-0773) per release notes
+  http://www.postgresql.org/docs/9.4/static/release-9-4-6.html
+
 * Wed Oct 21 2015 Pavel Raiskup <praiskup@redhat.com> - 9.4.5-1
 - update to 9.4.5 per release notes
   http://www.postgresql.org/docs/9.4/static/release-9-4-5.html
