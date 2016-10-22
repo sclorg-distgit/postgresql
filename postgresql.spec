@@ -58,7 +58,7 @@
 Summary: PostgreSQL client programs
 Name: %{?scl_prefix}postgresql
 %global majorversion 9.2
-Version: 9.2.15
+Version: 9.2.18
 Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
@@ -1147,6 +1147,12 @@ cat psql-%{majorversion}.lang >>main.lst
 %endif
 
 %changelog
+* Thu Aug 18 2016 Petr Kubat <pkubat@redhat.com> - 9.2.18-1
+- update to 9.2.18 per release notes
+  http://www.postgresql.org/docs/9.2/static/release-9-2-18.html
+  http://www.postgresql.org/docs/9.2/static/release-9-2-17.html
+  http://www.postgresql.org/docs/9.2/static/release-9-2-16.html
+
 * Tue Feb 16 2016 Pavel Kajaba <pkajaba@redhat.com> - 9.2.15-1
 - update to 9.2.15 per release notes
   http://www.postgresql.org/docs/9.2/static/release-9-2-15.html
