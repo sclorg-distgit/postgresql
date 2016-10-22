@@ -9,9 +9,9 @@ diff --git a/src/bin/pg_upgrade/server.c b/src/bin/pg_upgrade/server.c
 index 3d041ef..a9c56e0 100644
 --- a/src/bin/pg_upgrade/server.c
 +++ b/src/bin/pg_upgrade/server.c
-@@ -178,6 +178,12 @@ start_postmaster(ClusterInfo *cluster, bool throw_error)
- 	bool		pg_ctl_return = false;
- 	char		socket_string[MAXPGPATH + 200];
+@@ -191,6 +191,12 @@ start_postmaster(ClusterInfo *cluster, bool throw_error)
+ 
+ 	static bool exit_hook_registered = false;
  
 +	/* By default set to what upstream uses */
 +	int			rh_sock_dir_split = 903;
