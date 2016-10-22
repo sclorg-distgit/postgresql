@@ -64,8 +64,8 @@
 Summary: PostgreSQL client programs
 Name: %{?scl_prefix}postgresql
 %global majorversion 9.4
-Version: 9.4.6
-Release: 3%{?dist}
+Version: 9.4.9
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1172,6 +1172,15 @@ cd -
 %endif
 
 %changelog
+* Thu Aug 18 2016 Petr Kubat <pkubat@redhat.com> - 9.4.9-1
+- update to 9.4.9 per release notes
+  http://www.postgresql.org/docs/9.4/static/release-9-4-9.html
+  http://www.postgresql.org/docs/9.4/static/release-9-4-8.html
+  http://www.postgresql.org/docs/9.4/static/release-9-4-7.html
+
+* Wed Jul 27 2016 Pavel Raiskup <praiskup@redhat.com> - 9.4.6-4
+- rebuild fro s390x
+
 * Thu Apr 28 2016 Pavel Kajaba <pkajaba@redhat.com> - 9.4.6-3
 - Inlude missing files into files section (rhbz#1330640)
 
