@@ -62,8 +62,8 @@
 Summary: PostgreSQL client programs
 Name: %{?scl_prefix}postgresql
 %global majorversion 9.5
-Version: 9.5.2
-Release: 2%{?dist}
+Version: 9.5.4
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -1155,6 +1155,14 @@ cd -
 %endif
 
 %changelog
+* Thu Aug 18 2016 Petr Kubat <pkubat@redhat.com> - 9.5.4-1
+- Rebase to 9.5.4 per release notes
+  http://www.postgresql.org/docs/9.5/static/release-9-5-4.html
+  http://www.postgresql.org/docs/9.5/static/release-9-5-3.html
+
+* Wed Jul 27 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.2-3
+- rebuild for s390x
+
 * Mon May 09 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.2-2
 - fix upgrade path from rh-postgresql94 (rhbz#1334351)
 - fix path to binary directory in Makefile.regress (rhbz#1334706)
