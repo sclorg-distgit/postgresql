@@ -64,7 +64,7 @@
 Summary: PostgreSQL client programs
 Name: %{?scl_prefix}postgresql
 %global majorversion 9.4
-Version: 9.4.9
+Version: 9.4.12
 Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
@@ -620,7 +620,7 @@ cd ..
 # but I was unable to debug properly yet):
 #   error: create archive failed on file
 #   /builddir/.../...-9.4.1/README.rpm-dist: cpio: Bad magic
-cp $RPM_BUILD_ROOT/%{_pkgdocdir}/README.rpm-dist ./
+mv $RPM_BUILD_ROOT/%{_pkgdocdir}/README.rpm-dist ./
 
 cat > $RPM_BUILD_ROOT%{_sysconfdir}/postgresql-setup/upgrade/postgresql.conf <<EOF
 id              postgresql
@@ -1148,6 +1148,12 @@ cd -
 %endif
 
 %changelog
+* Fri May 12 2017 Pavel Raiskup <praiskup@redhat.com> - 9.4.12-1
+- update to 9.4.12 per release notes
+  http://www.postgresql.org/docs/9.4/static/release-9-4-12.html
+  http://www.postgresql.org/docs/9.4/static/release-9-4-11.html
+  http://www.postgresql.org/docs/9.4/static/release-9-4-10.html
+
 * Thu Aug 18 2016 Petr Kubat <pkubat@redhat.com> - 9.4.9-1
 - update to 9.4.9 per release notes
   http://www.postgresql.org/docs/9.4/static/release-9-4-9.html
