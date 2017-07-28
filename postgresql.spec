@@ -64,8 +64,8 @@
 Summary: PostgreSQL client programs
 Name: %{?scl_prefix}postgresql
 %global majorversion 9.5
-Version: 9.5.4
-Release: 1%{?dist}
+Version: 9.5.7
+Release: 2%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -605,7 +605,7 @@ cd ..
 # but I was unable to debug properly yet):
 #   error: create archive failed on file
 #   /builddir/.../...-9.4.1/README.rpm-dist: cpio: Bad magic
-cp $RPM_BUILD_ROOT/%{_pkgdocdir}/README.rpm-dist ./
+mv $RPM_BUILD_ROOT/%{_pkgdocdir}/README.rpm-dist ./
 
 # This creates config files for postgresql-setup to migrate dbs from various
 # versions to current one since data are not compatible with latest version
@@ -630,7 +630,7 @@ redhat_sockets_hack yes
 pghost_override	/tmp
 EOF
 
-cat > $RPM_BUILD_ROOT%{_sysconfdir}/postgresql-setup/upgrade/postgresql92.conf <<EOF
+cat > $RPM_BUILD_ROOT%{_sysconfdir}/postgresql-setup/upgrade/rh-postgresql94.conf <<EOF
 id		rh-postgresql94-postgresql
 major		9.4
 data_default	/var/opt/rh/rh-postgresql94/lib/pgsql/data
@@ -1180,6 +1180,18 @@ cd -
 %endif
 
 %changelog
+* Mon May 22 2017 Pavel Raiskup <praiskup@redhat.com> - 9.5.7-2
+- rebiuld for missing s390x el6 buildroot (RCM-16369)
+
+* Thu May 11 2017 Pavel Raiskup <praiskup@redhat.com> - 9.5.7-1
+- Rebase to 9.5.7 per release notes
+  http://www.postgresql.org/docs/9.5/static/release-9-5-7.html
+  http://www.postgresql.org/docs/9.5/static/release-9-5-6.html
+  http://www.postgresql.org/docs/9.5/static/release-9-5-5.html
+
+* Mon Sep 26 2016 Pavel Raiskup <praiskup@redhat.com> - 9.5.4-2
+- fix upgrade from postgresql92-postgresql (rhbz#1378787)
+
 * Thu Aug 18 2016 Petr Kubat <pkubat@redhat.com> - 9.5.4-1
 - Rebase to 9.5.4 per release notes
   http://www.postgresql.org/docs/9.5/static/release-9-5-4.html
