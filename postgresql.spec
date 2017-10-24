@@ -67,8 +67,8 @@
 Summary: PostgreSQL client programs
 Name: %{?scl_prefix}postgresql
 %global majorversion 9.6
-Version: 9.6.3
-Release: 8%{?dist}
+Version: 9.6.5
+Release: 1%{?dist}
 
 # The PostgreSQL license is very similar to other MIT licenses, but the OSI
 # recognizes it as an independent license, so we do as well.
@@ -105,7 +105,6 @@ Patch3: postgresql-perl-rpath.patch
 Patch5: postgresql-var-run-socket.patch
 Patch6: postgresql-man.patch
 Patch7: postgresql-socket-dirs-pgupgrade.patch
-Patch8: postgresql-hstore-plperl-data-dumper.patch
 
 BuildRequires: perl(ExtUtils::MakeMaker) glibc-devel bison flex gawk
 BuildRequires: perl(ExtUtils::Embed), perl-devel
@@ -379,11 +378,12 @@ benchmarks.
 %setup -q %{?scl:-n %{pkg_name}-%{version}} -a 12
 %patch1 -p1
 %patch2 -p1
+%if 0%{?rhel:1} && 0%{?rhel} <= 7
 %patch3 -p1
+%endif
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
 
 # We used to run autoconf here, but there's no longer any real need to,
 # since Postgres ships with a reasonably modern configure script.
@@ -515,9 +515,7 @@ unset PYTHON
 
 # Normal (not python3) build begins here
 
-# we want to build with rpath since LD_LIBRARY_PATH is not strong enough
-# for running pg_ctl under runuser command
-%configure \
+%configure --disable-rpath \
 %if %beta
 	--enable-debug \
 	--enable-cassert \
@@ -972,7 +970,6 @@ make -C postgresql-setup-%{setup_version} check
 %{_bindir}/psql
 %{_bindir}/reindexdb
 %{_bindir}/vacuumdb
-%dir %{_libdir}/pgsql
 %{_mandir}/man1/clusterdb.*
 %{_mandir}/man1/createdb.*
 %{_mandir}/man1/createlang.*
@@ -1140,6 +1137,7 @@ make -C postgresql-setup-%{setup_version} check
 
 %files libs -f libs.lst
 %doc COPYRIGHT
+%dir %{_libdir}/pgsql
 %{_libdir}/libecpg.so.*
 %{_libdir}/libecpg_compat.so.*
 %{_libdir}/libpgtypes.so.*
@@ -1229,6 +1227,10 @@ make -C postgresql-setup-%{setup_version} check
 %{_libdir}/libpgtypes.so
 %{_libdir}/libpq.so
 %{_libdir}/pgsql/pgxs/
+%if 0%{?scl:1}
+# https://bugzilla.redhat.com/show_bug.cgi?id=1431962
+%dir %{_libdir}/pkgconfig
+%endif
 %{_libdir}/pkgconfig/*.pc
 %{_mandir}/man1/ecpg.*
 %{_mandir}/man1/pg_config.*
@@ -1274,6 +1276,21 @@ make -C postgresql-setup-%{setup_version} check
 %endif
 
 %changelog
+* Fri Sep 22 2017 Petr Kubat <pkubat@redhat.com> - 9.6.5-1
+- the latest upstream minor release, per release notes:
+  https://www.postgresql.org/docs/9.6/static/release-9-6-5.html
+
+* Tue Sep 05 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.4-2
+- move %%_libdir/pgsql into *-libs subpackage
+
+* Wed Aug 09 2017 Petr Kubat <pkubat@redhat.com> - 9.6.4-1
+- the latest upstream minor release, per release notes:
+  https://www.postgresql.org/docs/9.6/static/release-9-6-4.html
+
+* Fri Jul 28 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-9
+- disable rpath in plperl/plpython (rhbz#1469431)
+- own pkgconfig dir in scls
+
 * Mon Jun 26 2017 Pavel Raiskup <praiskup@redhat.com> - 9.6.3-8
 - don't include syspaths' wrappers into server subpackage
 
