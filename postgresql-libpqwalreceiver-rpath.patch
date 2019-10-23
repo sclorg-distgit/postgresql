@@ -1,0 +1,22 @@
+Even in SCL world we so far lived fine with --disable-rpath.  But in some
+usecases, SCLized libpqwalreceiver.so needs to have RPATH set.
+
+Resolves: rhbz#1550567
+
+diff --git a/src/backend/replication/libpqwalreceiver/Makefile b/src/backend/replication/libpqwalreceiver/Makefile
+index 75b0e2b..69b0de6 100644
+--- a/src/backend/replication/libpqwalreceiver/Makefile
++++ b/src/backend/replication/libpqwalreceiver/Makefile
+@@ -15,7 +15,11 @@ include $(top_builddir)/src/Makefile.global
+ override CPPFLAGS := -I$(srcdir) -I$(libpq_srcdir) $(CPPFLAGS)
+ 
+ OBJS = libpqwalreceiver.o $(WIN32RES)
+-SHLIB_LINK_INTERNAL = $(libpq)
++# Force rpath to be used even though we disable it everywhere else.  This is
++# needed because the 'libpqwalreceiver.so' is loaded into process (with
++# CREATE SUBSCRIPTION) which has dropped the $LD_LIBRARY_PATH variable from the
++# parent $bindir/postgress process.
++SHLIB_LINK_INTERNAL = $(libpq) $(rpath)
+ SHLIB_LINK = $(filter -lintl, $(LIBS))
+ SHLIB_PREREQS = submake-libpq
+ PGFILEDESC = "libpqwalreceiver - receive WAL during streaming replication"
