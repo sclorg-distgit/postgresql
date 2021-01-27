@@ -1,0 +1,21 @@
+We configure Postgres with --disable-rpath because for the most part we
+want to leave it to ldconfig to determine where libraries are.  However,
+for some reason the Perl package puts libperl.so in a nonstandard place
+and doesn't add that place to the ldconfig search path.  I think this
+is a Perl packaging bug, myself, but apparently it's not going to change.
+So work around it by adding an rpath spec to plperl.so (only).
+Per bug #162198.
+
+diff -up postgresql-13.1/src/pl/plperl/GNUmakefile.patch3 postgresql-13.1/src/pl/plperl/GNUmakefile
+--- postgresql-13.1/src/pl/plperl/GNUmakefile.patch3	2020-12-09 21:29:47.269556344 +0100
++++ postgresql-13.1/src/pl/plperl/GNUmakefile	2020-12-09 21:31:06.100395606 +0100
+@@ -55,6 +55,9 @@ endif # win32
+ 
+ SHLIB_LINK = $(perl_embed_ldflags)
+ 
++# Force rpath to be used even though we disable it everywhere else
++SHLIB_LINK += $(rpath)
++
+ REGRESS_OPTS = --dbname=$(PL_TESTDB)
+ REGRESS = plperl_setup plperl plperl_lc plperl_trigger plperl_shared \
+ 	plperl_elog plperl_util plperl_init plperlu plperl_array \
